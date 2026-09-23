@@ -25,11 +25,10 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">WishKeeper</h1>
-                    <p class="text-xs text-slate-400">합리적인 소비를 위한 스마트 위시리스트</p>
+                    <p class="text-xs text-slate-400">구글 시트 연동 스마트 위시리스트</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <!-- Backup & Restore Buttons -->
                 <button onclick="exportData()" class="inline-flex items-center px-3 py-2 border border-slate-300 text-xs sm:text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition shadow-xs" title="데이터 백업">
                     <i class="fa-solid fa-download mr-1.5 text-slate-500"></i> 백업
                 </button>
@@ -134,7 +133,6 @@
             <form id="item-form" onsubmit="saveItem(event)" class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
                 <input type="hidden" id="item-id">
                 
-                <!-- Product Name & Category -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">상품명 *</label>
@@ -147,7 +145,6 @@
                     </div>
                 </div>
 
-                <!-- Price & Purchase Link -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">가격 (원) *</label>
@@ -159,7 +156,6 @@
                     </div>
                 </div>
 
-                <!-- Need & Urgency Selection -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">필요도 선택 *</label>
@@ -179,14 +175,12 @@
                     </div>
                 </div>
 
-                <!-- Photo URL/Upload -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">상품 사진 (이미지 URL 또는 업로드)</label>
                     <input type="text" id="item-image" placeholder="이미지 주소 입력 또는 아래 파일 선택" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none mb-1">
                     <input type="file" id="item-file" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
                 </div>
 
-                <!-- Reasons -->
                 <div>
                     <label class="block text-xs font-semibold text-emerald-600 uppercase mb-1"><i class="fa-solid fa-circle-check mr-1"></i> 구매해야 하는 사유 (Pros)</label>
                     <textarea id="item-pro-reason" rows="2" placeholder="이 물건이 왜 나에게 꼭 필요한지 적어보세요." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
@@ -197,7 +191,6 @@
                     <textarea id="item-con-reason" rows="2" placeholder="참아야 하는 이유나 단점이 있다면 적어보세요." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
                 </div>
 
-                <!-- Buttons -->
                 <div class="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200">
                     <button type="button" onclick="closeAddModal()" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 transition">취소</button>
                     <button type="submit" class="px-5 py-2 bg-rose-600 text-white rounded-lg text-sm font-medium hover:bg-rose-700 transition shadow-sm">저장하기</button>
@@ -216,14 +209,11 @@
                 </button>
             </div>
             <div class="p-6 space-y-4">
-                <!-- Add Category Form -->
                 <div class="flex space-x-2">
                     <input type="text" id="new-category-name" placeholder="새 카테고리 이름 입력" class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none">
                     <button onclick="addCategory()" class="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-900 transition">추가</button>
                 </div>
-                <!-- Category List -->
                 <div class="border border-slate-200 rounded-lg divide-y divide-slate-200 max-h-60 overflow-y-auto" id="category-list-container">
-                    <!-- Populated dynamically -->
                 </div>
                 <div class="text-right pt-2">
                     <button onclick="closeCategoryModal()" class="px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-lg hover:bg-rose-700 transition">확인</button>
@@ -232,69 +222,64 @@
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript Logic & Google Sheets Integration -->
     <script>
-        let categories = ['의류', '악세서리', '생필품', '서비스', '전자기기', '도서/취미'];
-        let items = [
-            {
-                id: 1,
-                name: '미니멀 가죽 크로스백',
-                category: '악세서리',
-                price: 128000,
-                link: 'https://example.com',
-                need: '상',
-                urgency: '상',
-                image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80',
-                proReason: '기존에 들던 가방이 낡았고 어떤 코디에도 잘 어울림.',
-                conReason: '비슷한 블랙 컬러 가방이 이미 하나 있음.',
-                completed: false
-            },
-            {
-                id: 2,
-                name: '프리미엄 무선 노이즈캔슬링 이어폰',
-                category: '전자기기',
-                price: 249000,
-                link: 'https://example.com',
-                need: '중',
-                urgency: '상',
-                image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
-                proReason: '출퇴근 대중교통 소음 차단 필수. 업무 집중도 향상.',
-                conReason: '가격대가 다소 높아서 한 달 지출 계획에 부담됨.',
-                completed: false
-            }
-        ];
+        // 👇 여기에 구글 Apps Script에서 발급받은 웹 앱 URL을 넣어주세요!
+        const API_URL = "https://script.google.com/macros/s/AKfycbyrB7ddzikhoJWWpTz2EEWV4uXUSdBHoVRWrcORKbliBV95K2trxO_vuiMNdNRKqFM9ng/exec";
 
+        let categories = ['의류', '악세서리', '생필품', '서비스', '전자기기', '도서/취미'];
+        let items = [];
         let currentTab = 'wishlist';
         let uploadedImageBase64 = '';
 
         window.onload = function() {
-            loadData();
-            updateCategorySelectors();
-            renderItems();
+            fetchDataFromSheet();
         };
 
+        // 구글 시트에서 데이터 불러오기 (GET)
+        function fetchDataFromSheet() {
+            if (!API_URL || API_URL.includes("여기에")) {
+                // URL 미설정 시 기본 샘플 데이터 표시
+                items = [
+                    { id: 1, name: '미니멀 가죽 크로스백', category: '악세서리', price: 128000, link: '', need: '상', urgency: '상', image: '', proReason: '가방 교체 필요', conReason: '유사품 있음', completed: false }
+                ];
+                updateCategorySelectors();
+                renderItems();
+                return;
+            }
+
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        items = data;
+                    }
+                    updateCategorySelectors();
+                    renderItems();
+                })
+                .catch(err => {
+                    console.error("데이터 로드 실패:", err);
+                    renderItems();
+                });
+        }
+
+        // 구글 시트에 데이터 저장하기 (POST)
         function saveData() {
-            try {
-                const data = { categories, items };
-                localStorage.setItem('wishkeeper_data', JSON.stringify(data));
-            } catch (e) {
-                console.error("Save error:", e);
-            }
+            if (!API_URL || API_URL.includes("여기에")) return;
+
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(items)
+            }).catch(err => {
+                console.error("동기화 실패:", err);
+            });
         }
 
-        function loadData() {
-            try {
-                const saved = localStorage.getItem('wishkeeper_data');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (parsed.categories) categories = parsed.categories;
-                    if (parsed.items) items = parsed.items;
-                }
-            } catch (e) {
-                console.error("Load error:", e);
-            }
-        }
-
+        // 백업 (JSON 파일 다운로드)
         function exportData() {
             const data = { categories, items };
             const jsonStr = JSON.stringify(data, null, 2);
@@ -307,6 +292,7 @@
             URL.revokeObjectURL(url);
         }
 
+        // 불러오기 (JSON 파일 업로드)
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -327,7 +313,6 @@
                     }
                 } catch (err) {
                     alert('파일을 읽는 중 오류가 발생했습니다.');
-                    console.error(err);
                 }
             };
             reader.readAsText(file);
